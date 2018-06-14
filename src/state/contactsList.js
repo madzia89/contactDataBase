@@ -1,61 +1,67 @@
 import _ from 'lodash';
 
-const FETCH_CONTACTS_SUCCESS = 'contactsList/FETCH_CONTACTS_SUCCESS'
-const CHANGE_ORDER_OF_CONTACTS = 'contactsList/FETCH_USERS_SUCCESS'
+const FETCH_USERS = 'contactsList/FETCH_USERS'
+const CHANGE_ORDER_OF_CONTACTS = 'contactsList/CHANGE_ORDER_OF_CONTACTS'
 
-export const fetchusersSuccess = (jsonUsers) => ({
-    type: FETCH_CONTACTS_SUCCESS,
+export const fetchContacts = (jsonUsers) => ({
+    type: FETCH_USERS,
     jsonUsers
 })
+
 export const changeOrderOfContacts = (contacts) => ({
     type: CHANGE_ORDER_OF_CONTACTS,
     contacts
 })
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=10")
+    fetch("https://randomuser.me/api/?results=5000")
         .then(res => res.json())
         .then(jsonUsers => {
-            dispatch(fetchusersSuccess(jsonUsers))
+            dispatch(fetchContacts(jsonUsers))
         })
 }
 
-export const sortByAZ = (name, sortBy) => (dispatch, getState) => {
-    let currentState = getState().stateForSelects.contacts
-    currentState = _.orderBy(name, [`${sortBy}`], ['asc', 'desc'])
-    dispatch(changeOrderOfContacts(currentState))
+export const sortByAZ = (sortBy) => (dispatch, getState) => {
+    let currentState = getState().contactsList.contacts
+    let toBeNewState = _.orderBy(currentState, [`${sortBy}`], ['asc', 'desc'])
+    return dispatch(changeOrderOfContacts(toBeNewState))
 }
-export const sortByZA = (name, sortBy) => (dispatch, getState) => {
-    let currentState = getState().stateForSelects.contacts
-    currentState = _.orderBy(name, [`${sortBy}`], ['desc', 'asc'])
-    dispatch(changeOrderOfContacts(currentState))
+export const sortByZA = (sortBy) => (dispatch, getState) => {
+    let currentState = getState().contactsList.contacts
+    let toBeNewState = _.orderBy(currentState, [`${sortBy}`], ['desc', 'asc'])
+    return dispatch(changeOrderOfContacts(toBeNewState))
 }
 
-export const selectedValue = () => (dispatch, getState) => {
+export const selectedValueName = () => (dispatch, getState) => {
     const selectWithName = document.getElementById('selectWithName').value
-    const selectWithLastName = document.getElementById('selectWithLastName').value
-    const selectWithCity = document.getElementById('selectWithCity').value
-    const actualStateOfContacts = getState().contactsList.contacts
     if (selectWithName === 'sortByNameAZ') {
-        dispatch(sortByAZ(actualStateOfContacts, 'name.first'))
+        dispatch(sortByAZ('name.first'))
     }
     if (selectWithName === 'sortByNameZA') {
-        dispatch(sortByZA(actualStateOfContacts, 'name.first'))
+        dispatch(sortByZA('name.first'))
     }
+
+}
+export const selectedValueLastName = () => (dispatch, getState) => {
+    const selectWithLastName = document.getElementById('selectWithLastName').value
+
     if (selectWithLastName === 'sortByLastNameAZ') {
-        dispatch(sortByAZ(actualStateOfContacts, 'name.last'))
+        dispatch(sortByAZ('name.last'))
     }
-    if (selectWithLastName === 'sortByLastNameZA') {
-        dispatch(sortByZA(actualStateOfContacts, 'name.last'))
+    else {
+        dispatch(sortByZA('name.last'))
     }
+
+}
+export const selectedValueCity = () => (dispatch, getState) => {
+    const selectWithCity = document.getElementById('selectWithCity').value
     if (selectWithCity === 'sortByCityAZ') {
-        dispatch(sortByAZ(actualStateOfContacts, 'location.city'))
+        dispatch(sortByAZ('location.city'))
     }
-    if (selectWithCity === 'sortByCityZA') {
-        dispatch(sortByZA(actualStateOfContacts, 'location.city'))
+    else {
+        dispatch(sortByZA('location.city'))
     }
 }
-
 
 const initialState = {
     contacts: {},
@@ -63,7 +69,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
-        case FETCH_CONTACTS_SUCCESS:
+        case FETCH_USERS:
             const users = action.jsonUsers
             const myContacts = users.results
             return {

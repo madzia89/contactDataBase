@@ -1,13 +1,80 @@
 import React, {Component} from 'react'
 import {firstLetterToUpperCase} from "./utils";
-import {Grid, Row, Col} from 'react-flexbox-grid'
-import {selectedValue} from "../state/contactsList";
+import {Grid, Row} from 'react-flexbox-grid'
+import {selectedValueName, selectedValueLastName, selectedValueCity} from "../state/contactsList";
 import {selectCategory} from "../state/stateForSelects";
 import {connect} from "react-redux";
 
 class ContactComponent extends Component {
+    state = {
+        currentPage: 1,
+        todosPerPage: 10
+    };
+
+    handleClick(event) {
+        this.setState({
+            currentPage: Number(event.target.id)
+        });
+    }
 
     render() {
+        const myContacts = this.props.contacts
+        const {currentPage, todosPerPage} = this.state;
+
+        // Logic for displaying current todos
+        const indexOfLastTodo = currentPage * todosPerPage;
+        const indexOfFirstTodo = indexOfLastTodo - todosPerPage;
+        const currentTodos = myContacts.slice(indexOfFirstTodo, indexOfLastTodo);
+
+        const renderTodos = currentTodos.map((contact, index) => {
+            return (
+                <tr key={contact.phone + contact.id.value}>
+                    <td>
+                        {<img src={contact.picture.thumbnail} alt={`${contact.name.first}`}/>}
+                    </td>
+                    <td>
+                        {firstLetterToUpperCase(contact.name.first)}
+                    </td>
+                    <td>
+                        {firstLetterToUpperCase(contact.name.last)}
+                    </td>
+                    <td>
+                        {contact.email}
+                    </td>
+                    <td>
+                        {firstLetterToUpperCase(contact.location.city)}
+                    </td>
+                    <td>
+                        {<button
+                            onClick={() => {
+                                console.log(contact.email)
+                            }
+                            }
+                        >
+                            clickForMore
+                        </button>}
+                    </td>
+                </tr>)
+        })
+
+        // Logic for displaying page numbers
+        const pageNumbers = [];
+        for (let i = 1; i <= Math.ceil(myContacts.length / todosPerPage); i++) {
+            pageNumbers.push(i);
+        }
+
+        const renderPageNumbers = pageNumbers.map(number => {
+            return (
+                <li
+                    key={number}
+                    id={number}
+                    onClick={(ev) => this.handleClick(ev)}
+                >
+                    {number}
+                </li>
+            );
+        });
+
         return (
             <div>
                 {(this.props.contacts && this.props.contacts.length) ?
@@ -18,7 +85,10 @@ class ContactComponent extends Component {
                         <Row center={'xs'}>
                             <select
                                 id={'selectWithCategories'}
-                                onChange={this.props.selectCategory}>
+                                onChange={() => {
+                                    this.props.selectCategory()
+                                    this.forceUpdate()
+                                }}>
                                 <option value="empty"></option>
                                 <option value="name">name</option>
                                 <option value="lastName">last name</option>
@@ -26,7 +96,7 @@ class ContactComponent extends Component {
 
                             </select>
                             <select id={'selectWithName'}
-                                    onChange={this.props.selectedValue}
+                                    onChange={this.props.selectedValueName}
                                     className={this.props.classNameForNameSelect}
                             >
                                 <option value="sortByNameAZ"></option>
@@ -34,7 +104,7 @@ class ContactComponent extends Component {
                                 <option value="sortByNameZA">z-a</option>
                             </select>
                             <select id={'selectWithLastName'}
-                                    onChange={this.props.selectedValue}
+                                    onChange={this.props.selectedValueLastName}
                                     className={this.props.classNameForLastNameSelect}
                             >
                                 <option value="sortByLastName"></option>
@@ -42,7 +112,7 @@ class ContactComponent extends Component {
                                 <option value="sortByLastNameZA">z-a</option>
                             </select>
                             <select id={'selectWithCity'}
-                                    onChange={this.props.selectedValue}
+                                    onChange={this.props.selectedValueCity}
                                     className={this.props.classNameForCitySelect}
                             >
                                 <option value="sortByLastName"></option>
@@ -62,47 +132,20 @@ class ContactComponent extends Component {
                             </tr>
                             </thead>
                             <tbody>
-                            {this.props.contacts.map((name) =>
-                                <tr key={name.phone + name.id.value}>
-                                    <td>
-                                        {<img src={name.picture.thumbnail}/>}
-                                    </td>
-                                    <td>
-                                        {firstLetterToUpperCase(name.name.first)}
-                                    </td>
-                                    <td>
-                                        {firstLetterToUpperCase(name.name.last)}
-                                    </td>
-                                    <td>
-                                        {name.email}
-                                    </td>
-                                    <td>
-                                        {firstLetterToUpperCase(name.location.city)}
-                                    </td>
-                                    <td>
-                                        {<button
-                                            onClick={() => {
-                                                console.log(name.email)
-                                            }
-                                            }
-                                        >
-                                            clickForMore
-                                        </button>}
-                                    </td>
-                                </tr>
-                            )
-                            }
+                            {renderTodos}
                             </tbody>
                         </table>
                     </Grid>
                     :
                     null
                 }
-                )
-            </div>)
+                <ul id="page-numbers">
+                    {renderPageNumbers}
+                </ul>
+            </div>
+        );
     }
 }
-
 
 const mapStateToProps = state => ({
     contacts: state.contactsList.contacts,
@@ -113,7 +156,9 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     selectCategory: () => dispatch(selectCategory()),
-    selectedValue: () => dispatch(selectedValue())
+    selectedValueName: () => dispatch(selectedValueName()),
+    selectedValueLastName: () => dispatch(selectedValueLastName()),
+    selectedValueCity: () => dispatch(selectedValueCity())
 })
 
 export default connect(

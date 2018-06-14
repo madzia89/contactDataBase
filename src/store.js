@@ -17,4 +17,5 @@ export const store = createStore(
         applyMiddleware(thunk)
     )
 )
+
 store.dispatch(initUsers())

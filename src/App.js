@@ -1,15 +1,32 @@
 import React, {Component} from 'react'
 import ContactsComponent from "./mocks/ContactsComponent.js"
+import {connect} from "react-redux"
 
 class App extends Component {
+
     render() {
 
         return (
             <div className="App">
-                <ContactsComponent/>
+                {(this.props.contacts.length > 0) ?
+                    <ContactsComponent/>
+                    :
+                    'loading'
+                }
+
             </div>
         )
     }
 }
 
-export default (App)
+const mapStateToProps = state => ({
+    contacts: state.contactsList.contacts,
+
+})
+const mapDispatchToProps = dispatch => ({
+})
+
+export default connect(
+    mapStateToProps,
+    mapDispatchToProps
+)(App)

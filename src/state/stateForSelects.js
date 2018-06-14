@@ -34,6 +34,7 @@ export const selectCategory = () => (dispatch, getState) => {
         dispatch(changeClassNameForCity('itIsVisible'))
         :
         dispatch(changeClassNameForCity('itIsInvisible'))
+
 }
 
 
