@@ -1,77 +1,11 @@
 import React, {Component} from 'react'
 import {firstLetterToUpperCase} from "./utils";
 import {Grid, Row, Col} from 'react-flexbox-grid'
-import {initUsers} from "../state/contactsList";
+import {selectedValue} from "../state/contactsList";
+import {selectCategory} from "../state/stateForSelects";
 import {connect} from "react-redux";
-import _ from 'lodash';
-
 
 class ContactComponent extends Component {
-    state = {
-        classNameForNameSelect: 'itIsInvisible',
-        classNameForLastNameSelect: 'itIsInvisible',
-        classNameForCitySelect: 'itIsInvisible',
-    }
-
-    showSelectWithName = () => {
-        const selectorWithCategories = document.getElementById('selectWithCategories').value
-        ;(selectorWithCategories === 'name') ?
-            this.setState({classNameForNameSelect: 'itIsVisible'})
-            :
-            this.setState({classNameForNameSelect: 'itIsInvisible'})
-
-        ;(selectorWithCategories === 'lastName') ?
-            this.setState({classNameForLastNameSelect: 'itIsVisible'})
-            :
-            this.setState({classNameForLastNameSelect: 'itIsInvisible'})
-
-        ;(selectorWithCategories === 'city') ?
-            this.setState({classNameForCitySelect: 'itIsVisible'})
-            :
-            this.setState({classNameForCitySelect: 'itIsInvisible'})
-
-    }
-
-    selectedValue = () => {
-        const selectWithName = document.getElementById('selectWithName').value
-        const selectWithLastName = document.getElementById('selectWithLastName').value
-        const selectWithCity = document.getElementById('selectWithCity').value
-        const actualStateOfContacts = this.props.contacts
-        if (selectWithName === 'sortByNameAZ') {
-            this.sortByAZ(actualStateOfContacts, 'name.first')
-        }
-        if (selectWithName === 'sortByNameZA') {
-            this.sortByZA(actualStateOfContacts, 'name.first')
-        }
-        if (selectWithLastName === 'sortByLastNameAZ') {
-            this.sortByAZ(actualStateOfContacts, 'name.last')
-        }
-        if (selectWithLastName === 'sortByLastNameZA') {
-            this.sortByZA(actualStateOfContacts, 'name.last')
-        }
-        if (selectWithCity === 'sortByCityAZ') {
-            this.sortByAZ(actualStateOfContacts, 'location.city')
-        }
-        if (selectWithCity === 'sortByCityZA') {
-            this.sortByZA(actualStateOfContacts, 'location.city')
-        }
-
-    }
-
-    sortByAZ = (name, sortBy) => {
-        this.setState({
-            contacts:
-                _.orderBy(name, [`${sortBy}`], ['asc', 'desc'])
-        })
-    }
-
-    sortByZA(name, sortBy) {
-        this.setState({
-            contacts:
-                _.orderBy(name, [`${sortBy}`], ['desc', 'asc'])
-        })
-    }
-
 
     render() {
         return (
@@ -84,7 +18,7 @@ class ContactComponent extends Component {
                         <Row center={'xs'}>
                             <select
                                 id={'selectWithCategories'}
-                                onChange={this.showSelectWithName}>
+                                onChange={this.props.selectCategory}>
                                 <option value="empty"></option>
                                 <option value="name">name</option>
                                 <option value="lastName">last name</option>
@@ -92,24 +26,24 @@ class ContactComponent extends Component {
 
                             </select>
                             <select id={'selectWithName'}
-                                    onChange={this.selectedValue}
-                                    className={this.state.classNameForNameSelect}
+                                    onChange={this.props.selectedValue}
+                                    className={this.props.classNameForNameSelect}
                             >
                                 <option value="sortByNameAZ"></option>
                                 <option value="sortByNameAZ">a-z</option>
                                 <option value="sortByNameZA">z-a</option>
                             </select>
                             <select id={'selectWithLastName'}
-                                    onChange={this.selectedValue}
-                                    className={this.state.classNameForLastNameSelect}
+                                    onChange={this.props.selectedValue}
+                                    className={this.props.classNameForLastNameSelect}
                             >
                                 <option value="sortByLastName"></option>
                                 <option value="sortByLastNameAZ">a-z</option>
                                 <option value="sortByLastNameZA">z-a</option>
                             </select>
                             <select id={'selectWithCity'}
-                                    onChange={this.selectedValue}
-                                    className={this.state.classNameForCitySelect}
+                                    onChange={this.props.selectedValue}
+                                    className={this.props.classNameForCitySelect}
                             >
                                 <option value="sortByLastName"></option>
                                 <option value="sortByCityAZ">a-z</option>
@@ -119,28 +53,15 @@ class ContactComponent extends Component {
                         <table>
                             <thead>
                             <tr>
-                                <th>
-                                    pic
-                                </th>
-                                <th>
-                                    first name
-                                </th>
-                                <th>
-                                    last name
-                                </th>
-                                <th>
-                                    email
-                                </th>
-                                <th>
-                                    city
-                                </th>
-                                <th>
-                                    more
-                                </th>
+                                <th>pic</th>
+                                <th>first name</th>
+                                <th>last name</th>
+                                <th>email</th>
+                                <th>city</th>
+                                <th>more</th>
                             </tr>
                             </thead>
                             <tbody>
-
                             {this.props.contacts.map((name) =>
                                 <tr key={name.phone + name.id.value}>
                                     <td>
@@ -185,12 +106,15 @@ class ContactComponent extends Component {
 
 const mapStateToProps = state => ({
     contacts: state.contactsList.contacts,
+    classNameForNameSelect: state.stateForSelects.classNameForNameSelect,
+    classNameForLastNameSelect: state.stateForSelects.classNameForLastNameSelect,
+    classNameForCitySelect: state.stateForSelects.classNameForCitySelect,
 })
 
 const mapDispatchToProps = dispatch => ({
-    initUsers: () => dispatch(initUsers())
+    selectCategory: () => dispatch(selectCategory()),
+    selectedValue: () => dispatch(selectedValue())
 })
-
 
 export default connect(
     mapStateToProps,
