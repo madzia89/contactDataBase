@@ -2,6 +2,8 @@ import _ from 'lodash'
 
 const FETCH_USERS = 'contactsList/FETCH_USERS'
 const CHANGE_ORDER_OF_CONTACTS = 'contactsList/CHANGE_ORDER_OF_CONTACTS'
+const CHANGE_STATE_FOR_INPUT = 'contactsList/STATE_FOR_INPUT'
+const CLEAR_FORM_FIELDS = 'contactsList/CLEAR_FORM_FIELDS'
 
 export const fetchContacts = (jsonUsers) => ({
     type: FETCH_USERS,
@@ -12,9 +14,14 @@ export const changeOrderOfContacts = (contacts) => ({
     type: CHANGE_ORDER_OF_CONTACTS,
     contacts
 })
+export const changeStateForInput = (letters) => ({
+    type: CHANGE_STATE_FOR_INPUT,
+    letters
+})
+export const clearFormFields = () => ({type: CLEAR_FORM_FIELDS})
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=200")
+    fetch("https://randomuser.me/api/?results=2000")
         .then(res => res.json())
         .then(jsonUsers => {
             dispatch(fetchContacts(jsonUsers))
@@ -23,9 +30,9 @@ export const initUsers = () => (dispatch, getState) => {
 
 export const selectCategory = () => (dispatch, getState) => {
     let optionsForSecondSelect = {}
-    optionsForSecondSelect['name.first'] = ['', 'nameAZ', 'nameZA']
-    optionsForSecondSelect['name.last'] = ['', 'lastNameAZ', 'lastNameZA']
-    optionsForSecondSelect['location.city'] = ['', 'cityAZ', 'cityZA']
+    optionsForSecondSelect['name.first'] = ['', 'AZ', 'ZA']
+    optionsForSecondSelect['name.last'] = ['', 'AZ', 'ZA']
+    optionsForSecondSelect['location.city'] = ['', 'AZ', 'ZA']
 
     const selectorWithCategories = document.getElementById('selectWithCategories')
     const secondSelector = document.getElementById('secondSelect')
@@ -37,7 +44,7 @@ export const selectCategory = () => (dispatch, getState) => {
     if (selectors) {
         selectors.map((selector, i) => {
                 let createdOption = new Option(selectors[i], i)
-                secondSelector.options.add(createdOption)
+                return secondSelector.options.add(createdOption)
             }
         )
     }
@@ -47,19 +54,20 @@ export const sortContacts = () => (dispatch, getState) => {
     let currentState = getState().contactsList.contacts
     const pickedValueFromCategorySelect = document.getElementById('selectWithCategories').value
     const pickedValueFromSecondSelect = document.getElementById('secondSelect').value
-    console.log('pickedValueFromCategorySelect', pickedValueFromCategorySelect)
-    console.log('pickedValueFromSecondSelect', pickedValueFromSecondSelect)
-    if (pickedValueFromSecondSelect == 1) {
+
+    if (pickedValueFromSecondSelect === '1') {
         let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['asc', 'desc'])
         return dispatch(changeOrderOfContacts(toBeNewState))
-    } else if (pickedValueFromSecondSelect == 2) {
+    } else if (pickedValueFromSecondSelect === '2') {
         let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['desc', 'asc'])
         return dispatch(changeOrderOfContacts(toBeNewState))
     } else return
 }
 
 const initialState = {
+    fullList: {},
     contacts: {},
+    stateForSearchInput: ''
 }
 
 export default (state = initialState, action) => {
@@ -70,14 +78,51 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 contacts: myContacts,
+                fullList: myContacts,
             }
         case CHANGE_ORDER_OF_CONTACTS:
             return {
                 ...state,
                 contacts: action.contacts,
             }
+        case CLEAR_FORM_FIELDS:
+            const fullList = state.fullList
+            return {
+                ...state,
+                stateForSearchInput: '',
+                contacts: fullList,
+            }
+        case CHANGE_STATE_FOR_INPUT:
+            const actualContacts = state.fullList
+            const selectWithCategories = document.getElementById('selectWithCategories').value
+            const filteredList = actualContacts.filter(name => {
+                if (selectWithCategories === 'name.first') {
+                    return (
+                        name.name.first.includes(action.letters))
+                }
+                else if (selectWithCategories === 'name.last') {
+                    return (
+                        name.name.last.includes(action.letters))
+                }
+                else if (selectWithCategories === 'location.city') {
+                    return (
+                        name.location.city.includes(action.letters))
+                }
+                else {
+                    return (
+                        name.name.first.includes(action.letters) ||
+                        name.name.last.includes(action.letters) ||
+                        name.location.city.includes(action.letters) ||
+                        name.email.includes(action.letters) || !name
+                    )
+                }
+            })
+            return {
+                ...state,
+                stateForSearchInput: action.letters,
+                contacts: filteredList
+            }
         default:
             return state
     }
 }
-

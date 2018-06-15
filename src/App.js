@@ -8,7 +8,7 @@ class App extends Component {
 
         return (
             <div className="App">
-                {(this.props.contacts.length > 0) ?
+                {(this.props.fullList.length > 0) ?
                     <ContactsComponent/>
                     :
                     'loading'
@@ -20,7 +20,7 @@ class App extends Component {
 }
 
 const mapStateToProps = state => ({
-    contacts: state.contactsList.contacts,
+    fullList: state.contactsList.fullList,
 
 })
 const mapDispatchToProps = dispatch => ({
