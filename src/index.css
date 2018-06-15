@@ -4,14 +4,6 @@ body {
     font-family: sans-serif;
 }
 
-.itIsInvisible {
-    display: none;
-}
-
-.itIsVisible {
-    display: inline-block;
-}
-
 #page-numbers {
     list-style: none;
     display: flex;

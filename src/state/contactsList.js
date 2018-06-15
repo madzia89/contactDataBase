@@ -1,4 +1,4 @@
-import _ from 'lodash';
+import _ from 'lodash'
 
 const FETCH_USERS = 'contactsList/FETCH_USERS'
 const CHANGE_ORDER_OF_CONTACTS = 'contactsList/CHANGE_ORDER_OF_CONTACTS'
@@ -14,53 +14,48 @@ export const changeOrderOfContacts = (contacts) => ({
 })
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=5000")
+    fetch("https://randomuser.me/api/?results=200")
         .then(res => res.json())
         .then(jsonUsers => {
             dispatch(fetchContacts(jsonUsers))
         })
 }
 
-export const sortByAZ = (sortBy) => (dispatch, getState) => {
+export const selectCategory = () => (dispatch, getState) => {
+    let optionsForSecondSelect = {}
+    optionsForSecondSelect['name.first'] = ['', 'nameAZ', 'nameZA']
+    optionsForSecondSelect['name.last'] = ['', 'lastNameAZ', 'lastNameZA']
+    optionsForSecondSelect['location.city'] = ['', 'cityAZ', 'cityZA']
+
+    const selectorWithCategories = document.getElementById('selectWithCategories')
+    const secondSelector = document.getElementById('secondSelect')
+    let selectedOption = selectorWithCategories.options[selectorWithCategories.selectedIndex].value
+    while (secondSelector.options.length) {
+        secondSelector.remove(0)
+    }
+    let selectors = optionsForSecondSelect[selectedOption]
+    if (selectors) {
+        selectors.map((selector, i) => {
+                let createdOption = new Option(selectors[i], i)
+                secondSelector.options.add(createdOption)
+            }
+        )
+    }
+}
+
+export const sortContacts = () => (dispatch, getState) => {
     let currentState = getState().contactsList.contacts
-    let toBeNewState = _.orderBy(currentState, [`${sortBy}`], ['asc', 'desc'])
-    return dispatch(changeOrderOfContacts(toBeNewState))
-}
-export const sortByZA = (sortBy) => (dispatch, getState) => {
-    let currentState = getState().contactsList.contacts
-    let toBeNewState = _.orderBy(currentState, [`${sortBy}`], ['desc', 'asc'])
-    return dispatch(changeOrderOfContacts(toBeNewState))
-}
-
-export const selectedValueName = () => (dispatch, getState) => {
-    const selectWithName = document.getElementById('selectWithName').value
-    if (selectWithName === 'sortByNameAZ') {
-        dispatch(sortByAZ('name.first'))
-    }
-    if (selectWithName === 'sortByNameZA') {
-        dispatch(sortByZA('name.first'))
-    }
-
-}
-export const selectedValueLastName = () => (dispatch, getState) => {
-    const selectWithLastName = document.getElementById('selectWithLastName').value
-
-    if (selectWithLastName === 'sortByLastNameAZ') {
-        dispatch(sortByAZ('name.last'))
-    }
-    else {
-        dispatch(sortByZA('name.last'))
-    }
-
-}
-export const selectedValueCity = () => (dispatch, getState) => {
-    const selectWithCity = document.getElementById('selectWithCity').value
-    if (selectWithCity === 'sortByCityAZ') {
-        dispatch(sortByAZ('location.city'))
-    }
-    else {
-        dispatch(sortByZA('location.city'))
-    }
+    const pickedValueFromCategorySelect = document.getElementById('selectWithCategories').value
+    const pickedValueFromSecondSelect = document.getElementById('secondSelect').value
+    console.log('pickedValueFromCategorySelect', pickedValueFromCategorySelect)
+    console.log('pickedValueFromSecondSelect', pickedValueFromSecondSelect)
+    if (pickedValueFromSecondSelect == 1) {
+        let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['asc', 'desc'])
+        return dispatch(changeOrderOfContacts(toBeNewState))
+    } else if (pickedValueFromSecondSelect == 2) {
+        let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['desc', 'asc'])
+        return dispatch(changeOrderOfContacts(toBeNewState))
+    } else return
 }
 
 const initialState = {

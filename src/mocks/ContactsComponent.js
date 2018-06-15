@@ -1,8 +1,7 @@
 import React, {Component} from 'react'
 import {firstLetterToUpperCase} from "./utils";
 import {Grid, Row} from 'react-flexbox-grid'
-import {selectedValueName, selectedValueLastName, selectedValueCity} from "../state/contactsList";
-import {selectCategory} from "../state/stateForSelects";
+import {selectCategory, sortContacts} from "../state/contactsList";
 import {connect} from "react-redux";
 
 class ContactComponent extends Component {
@@ -57,7 +56,6 @@ class ContactComponent extends Component {
                 </tr>)
         })
 
-        // Logic for displaying page numbers
         const pageNumbers = [];
         for (let i = 1; i <= Math.ceil(myContacts.length / todosPerPage); i++) {
             pageNumbers.push(i);
@@ -87,37 +85,15 @@ class ContactComponent extends Component {
                                 id={'selectWithCategories'}
                                 onChange={() => {
                                     this.props.selectCategory()
-                                    this.forceUpdate()
                                 }}>
                                 <option value="empty"></option>
-                                <option value="name">name</option>
-                                <option value="lastName">last name</option>
-                                <option value="city">city</option>
+                                <option value="name.first">name</option>
+                                <option value="name.first">last name</option>
+                                <option value="location.city">city</option>
+                            </select>
 
-                            </select>
-                            <select id={'selectWithName'}
-                                    onChange={this.props.selectedValueName}
-                                    className={this.props.classNameForNameSelect}
-                            >
-                                <option value="sortByNameAZ"></option>
-                                <option value="sortByNameAZ">a-z</option>
-                                <option value="sortByNameZA">z-a</option>
-                            </select>
-                            <select id={'selectWithLastName'}
-                                    onChange={this.props.selectedValueLastName}
-                                    className={this.props.classNameForLastNameSelect}
-                            >
-                                <option value="sortByLastName"></option>
-                                <option value="sortByLastNameAZ">a-z</option>
-                                <option value="sortByLastNameZA">z-a</option>
-                            </select>
-                            <select id={'selectWithCity'}
-                                    onChange={this.props.selectedValueCity}
-                                    className={this.props.classNameForCitySelect}
-                            >
-                                <option value="sortByLastName"></option>
-                                <option value="sortByCityAZ">a-z</option>
-                                <option value="sortByCityZA">z-a</option>
+                            <select id={'secondSelect'}
+                                    onChange={this.props.sortContacts}>
                             </select>
                         </Row>
                         <table>
@@ -149,16 +125,11 @@ class ContactComponent extends Component {
 
 const mapStateToProps = state => ({
     contacts: state.contactsList.contacts,
-    classNameForNameSelect: state.stateForSelects.classNameForNameSelect,
-    classNameForLastNameSelect: state.stateForSelects.classNameForLastNameSelect,
-    classNameForCitySelect: state.stateForSelects.classNameForCitySelect,
 })
 
 const mapDispatchToProps = dispatch => ({
     selectCategory: () => dispatch(selectCategory()),
-    selectedValueName: () => dispatch(selectedValueName()),
-    selectedValueLastName: () => dispatch(selectedValueLastName()),
-    selectedValueCity: () => dispatch(selectedValueCity())
+    sortContacts: () => dispatch(sortContacts()),
 })
 
 export default connect(
