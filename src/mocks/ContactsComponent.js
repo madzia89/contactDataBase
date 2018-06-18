@@ -1,7 +1,13 @@
 import React, {Component} from 'react'
 import {firstLetterToUpperCase} from "./utils";
 import {Grid, Row} from 'react-flexbox-grid'
-import {selectCategory, sortContacts, changeStateForInput, clearFormFields} from "../state/contactsList";
+import {
+    selectCategory,
+    sortContacts,
+    changeStateForInput,
+    clearFormFields,
+    changeStateForAdvancedInput
+} from "../state/contactsList";
 import {connect} from "react-redux";
 
 class ContactComponent extends Component {
@@ -18,7 +24,15 @@ class ContactComponent extends Component {
     }
 
     render() {
-        const myContacts = this.props.contacts
+
+        const myContacts = this.props.contacts.filter(name => {
+            return (
+                name.name.first.includes(this.props.stateForAdvancedSearchInput) ||
+                name.name.last.includes(this.props.stateForAdvancedSearchInput) ||
+                name.location.city.includes(this.props.stateForAdvancedSearchInput) ||
+                name.email.includes(this.props.stateForAdvancedSearchInput) || !name
+            )
+        })
         const {currentPage, contactsPerPage} = this.state;
 
         const indexOfLastContact = currentPage * contactsPerPage;
@@ -111,6 +125,16 @@ class ContactComponent extends Component {
                             >
                                 CLEAR
                             </button>
+                            <input
+                                id={'advancedSearchListInput'}
+                                className={'thisInputIsInvisible'}
+                                type={'text'}
+                                value={this.props.stateForAdvancedSearchInput}
+                                onChange={(event) => {
+                                    this.props.changeStateForAdvancedInput(event.target.value)
+                                }}
+                            >
+                            </input>
                         </Row>
                         <table>
                             <thead>
@@ -141,8 +165,9 @@ class ContactComponent extends Component {
 
 const mapStateToProps = state => ({
     contacts: state.contactsList.contacts,
-    fullList: state.contactsList.fullList,
     stateForSearchInput: state.contactsList.stateForSearchInput,
+    fullList: state.contactsList.fullList,
+    stateForAdvancedSearchInput: state.contactsList.stateForAdvancedSearchInput,
 })
 
 const mapDispatchToProps = dispatch => ({
@@ -150,6 +175,7 @@ const mapDispatchToProps = dispatch => ({
     sortContacts: () => dispatch(sortContacts()),
     changeStateForInput: (val) => dispatch(changeStateForInput(val)),
     clearFormFields: (val) => dispatch(clearFormFields(val)),
+    changeStateForAdvancedInput: (val) => dispatch(changeStateForAdvancedInput(val)),
 })
 
 export default connect(
