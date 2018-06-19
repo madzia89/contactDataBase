@@ -1,20 +1,21 @@
 import React, {Component} from 'react'
-import {firstLetterToUpperCase} from "./utils";
+import {firstLetterToUpperCase} from "./utils"
 import {Grid, Row} from 'react-flexbox-grid'
 import {
     selectCategory,
     sortContacts,
     changeStateForInput,
     clearFormFields,
-    changeStateForAdvancedInput
-} from "../state/contactsList";
-import {connect} from "react-redux";
+    changeStateForAdvancedInput,
+} from "../state/contactsList"
+import {connect} from "react-redux"
+import TextInModal from "./TextInModal"
 
 class ContactComponent extends Component {
     state = {
         currentPage: 1,
         contactsPerPage: 10,
-        valueForTextInput: ''
+        clickedContact: {}
     }
 
     handleClick(event) {
@@ -23,7 +24,23 @@ class ContactComponent extends Component {
         })
     }
 
+    openModal = () => {
+        const modal = document.getElementById('myModal')
+        modal.style.display = "block"
+    }
+
+    clickOnSpanClose = () => {
+        const modal = document.getElementById('myModal')
+        modal.style.display = "none";
+    }
+
     render() {
+        // window.onClick = (event) => {
+        //     const modal = document.getElementById('myModal')
+        //     if (event.target !== modal) {
+        //         modal.style.display = "none";
+        //     }
+        // }
 
         const myContacts = this.props.contacts.filter(name => {
             return (
@@ -59,8 +76,11 @@ class ContactComponent extends Component {
                     </td>
                     <td>
                         {<button
+                            id={'myBtn'}
                             onClick={() => {
-                                console.log(contact.email)
+                                this.setState({clickedContact: contact})
+                                this.openModal()
+
                             }
                             }
                         >
@@ -158,6 +178,26 @@ class ContactComponent extends Component {
                 <ul id="page-numbers">
                     {renderPageNumbers}
                 </ul>
+
+                <div
+                    id="myModal"
+                    className="modal"
+                    onClick={(event) => {
+                        const modal = document.getElementById('myModal')
+                        if (event.target === modal) {
+                            modal.style.display = "none";
+                        }
+                    }
+                    }
+                >
+                    <div className="modal-content">
+                        <span className="close"
+                              onClick={() => this.clickOnSpanClose()}>&times;</span>
+                        <TextInModal
+                            clickedContact={this.state.clickedContact}
+                        />
+                    </div>
+                </div>
             </div>
         );
     }

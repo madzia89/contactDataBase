@@ -23,8 +23,7 @@ const mapStateToProps = state => ({
     fullList: state.contactsList.fullList,
 
 })
-const mapDispatchToProps = dispatch => ({
-})
+const mapDispatchToProps = dispatch => ({})
 
 export default connect(
     mapStateToProps,

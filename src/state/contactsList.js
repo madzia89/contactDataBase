@@ -15,10 +15,12 @@ export const changeOrderOfContacts = (contacts) => ({
     type: CHANGE_ORDER_OF_CONTACTS,
     contacts
 })
+
 export const changeStateForInput = (lettersForBasicSearchInput) => ({
     type: CHANGE_STATE_FOR_INPUT,
     lettersForBasicSearchInput
 })
+
 export const changeStateForAdvancedInput = (lettersForAdvancedSearchInput) => ({
     type: CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT,
     lettersForAdvancedSearchInput
@@ -87,11 +89,13 @@ export default (state = initialState, action) => {
                 contacts: myContacts,
                 fullList: myContacts,
             }
+
         case CHANGE_ORDER_OF_CONTACTS:
             return {
                 ...state,
                 contacts: action.contacts,
             }
+
         case CLEAR_FORM_FIELDS:
             const fullList = state.fullList
             return {
@@ -100,6 +104,7 @@ export default (state = initialState, action) => {
                 stateForAdvancedSearchInput: '',
                 contacts: fullList,
             }
+
         case CHANGE_STATE_FOR_INPUT:
             const actualContacts = state.fullList
             const selectWithCategories = document.getElementById('selectWithCategories').value
@@ -139,6 +144,7 @@ export default (state = initialState, action) => {
                 stateForSearchInput: action.lettersForBasicSearchInput,
                 contacts: filteredList
             }
+
         case CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT:
             return {
                 ...state,
