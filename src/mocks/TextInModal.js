@@ -6,7 +6,7 @@ import {connect} from "react-redux"
 class TextInModal extends Component {
     showInput = (indexOfTr) => {
 
-        const newTd = React.createElement('span', {id: indexOfTr + 20},
+        const newTd = React.createElement('span', {id: indexOfTr + `input`},
             React.createElement('input', null),
             React.createElement('button', {
                 onClick: () => {
@@ -43,19 +43,20 @@ class TextInModal extends Component {
 
                             {arrayOfVaraiblesForReactFactory.map((data, i) => {
                                     return (
-                                        React.createElement('div', {key: i, id: `${data}${i}`},
+                                        React.createElement('div', {key: i},
                                             React.createElement('span', null, data),
                                             React.createElement('span', null, arrayForReactFactory[i]),
                                             React.createElement('span', null, React.createElement('button', {
                                                 onClick: () => {
-                                                    this.showInput(`${i}${data}`)
+                                                    this.showInput(`${data}div`)
+
                                                 },
                                                 type: 'button',
                                                 className: 'buttonForContactEdit',
                                                 alt: 'edit',
                                                 title: 'edit'
                                             })),
-                                            React.createElement('div', {id: `${i}${data}`})
+                                            React.createElement('div', {id: `${data}div`})
                                         )
                                     )
                                 }
@@ -83,7 +84,8 @@ const mapStateToProps = state => ({
     clickedContact: state.contactsList.clickedContact,
 })
 
-const mapDispatchToProps = dispatch => ({})
+const mapDispatchToProps = dispatch => ({
+})
 
 export default connect(
     mapStateToProps,

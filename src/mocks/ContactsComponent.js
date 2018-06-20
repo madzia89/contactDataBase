@@ -11,6 +11,7 @@ import {
 } from "../state/contactsList"
 import {connect} from "react-redux"
 import TextInModal from "./TextInModal"
+import {getCurrentContactValue} from "../state/singleContactChange";
 
 class ContactComponent extends Component {
     state = {
@@ -74,6 +75,7 @@ class ContactComponent extends Component {
                             onClick={() => {
                                 this.props.clickedContact(contact)
                                 this.openModal()
+                                this.props.getCurrentContactValue()
 
                             }
                             }
@@ -186,7 +188,9 @@ class ContactComponent extends Component {
                 >
                     <div className="modal-content">
                         <span className="close"
-                              onClick={() => this.clickOnSpanClose()}>&times;</span>
+                              onClick={() => {
+                                  this.clickOnSpanClose()
+                              }}>&times;</span>
                         <TextInModal
                             clickedContact={this.state.clickedContact}
                         />
@@ -210,7 +214,8 @@ const mapDispatchToProps = dispatch => ({
     changeStateForInput: (val) => dispatch(changeStateForInput(val)),
     clearFormFields: (val) => dispatch(clearFormFields(val)),
     changeStateForAdvancedInput: (val) => dispatch(changeStateForAdvancedInput(val)),
-    clickedContact: (val) => dispatch(clickedContact(val))
+    clickedContact: (val) => dispatch(clickedContact(val)),
+    getCurrentContactValue: () => dispatch(getCurrentContactValue())
 })
 
 export default connect(
