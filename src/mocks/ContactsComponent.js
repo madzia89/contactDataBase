@@ -7,6 +7,7 @@ import {
     changeStateForInput,
     clearFormFields,
     changeStateForAdvancedInput,
+    clickedContact,
 } from "../state/contactsList"
 import {connect} from "react-redux"
 import TextInModal from "./TextInModal"
@@ -15,7 +16,6 @@ class ContactComponent extends Component {
     state = {
         currentPage: 1,
         contactsPerPage: 10,
-        clickedContact: {}
     }
 
     handleClick(event) {
@@ -35,12 +35,6 @@ class ContactComponent extends Component {
     }
 
     render() {
-        // window.onClick = (event) => {
-        //     const modal = document.getElementById('myModal')
-        //     if (event.target !== modal) {
-        //         modal.style.display = "none";
-        //     }
-        // }
 
         const myContacts = this.props.contacts.filter(name => {
             return (
@@ -50,11 +44,11 @@ class ContactComponent extends Component {
                 name.email.includes(this.props.stateForAdvancedSearchInput) || !name
             )
         })
-        const {currentPage, contactsPerPage} = this.state;
+        const {currentPage, contactsPerPage} = this.state
+        const indexOfLastContact = currentPage * contactsPerPage
+        const indexOfFirstContact = indexOfLastContact - contactsPerPage
+        const currentContacts = myContacts.slice(indexOfFirstContact, indexOfLastContact)
 
-        const indexOfLastContact = currentPage * contactsPerPage;
-        const indexOfFirstContact = indexOfLastContact - contactsPerPage;
-        const currentContacts = myContacts.slice(indexOfFirstContact, indexOfLastContact);
 
         const renderContacts = currentContacts.map((contact, index) => {
             return (
@@ -78,7 +72,7 @@ class ContactComponent extends Component {
                         {<button
                             id={'myBtn'}
                             onClick={() => {
-                                this.setState({clickedContact: contact})
+                                this.props.clickedContact(contact)
                                 this.openModal()
 
                             }
@@ -92,7 +86,7 @@ class ContactComponent extends Component {
 
         const pageNumbers = [];
         for (let i = 1; i <= Math.ceil(myContacts.length / contactsPerPage); i++) {
-            pageNumbers.push(i);
+            pageNumbers.push(i)
         }
 
         const renderPageNumbers = pageNumbers.map(number => {
@@ -104,8 +98,8 @@ class ContactComponent extends Component {
                 >
                     {number}
                 </li>
-            );
-        });
+            )
+        })
 
         return (
             <div>
@@ -216,6 +210,7 @@ const mapDispatchToProps = dispatch => ({
     changeStateForInput: (val) => dispatch(changeStateForInput(val)),
     clearFormFields: (val) => dispatch(clearFormFields(val)),
     changeStateForAdvancedInput: (val) => dispatch(changeStateForAdvancedInput(val)),
+    clickedContact: (val) => dispatch(clickedContact(val))
 })
 
 export default connect(

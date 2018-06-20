@@ -5,6 +5,7 @@ const CHANGE_ORDER_OF_CONTACTS = 'contactsList/CHANGE_ORDER_OF_CONTACTS'
 const CHANGE_STATE_FOR_INPUT = 'contactsList/STATE_FOR_INPUT'
 const CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT = 'contactsList/CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT'
 const CLEAR_FORM_FIELDS = 'contactsList/CLEAR_FORM_FIELDS'
+const CLICKED_CONTACT = 'contactsList/CLICKED_CONTACT'
 
 export const fetchContacts = (jsonUsers) => ({
     type: FETCH_USERS,
@@ -27,6 +28,11 @@ export const changeStateForAdvancedInput = (lettersForAdvancedSearchInput) => ({
 })
 
 export const clearFormFields = () => ({type: CLEAR_FORM_FIELDS})
+
+export const clickedContact = (valueOfTheClickedContact) => ({
+    type: CLICKED_CONTACT,
+    valueOfTheClickedContact
+})
 
 export const initUsers = () => (dispatch, getState) => {
     fetch("https://randomuser.me/api/?results=100")
@@ -76,7 +82,8 @@ const initialState = {
     fullList: {},
     contacts: {},
     stateForSearchInput: '',
-    stateForAdvancedSearchInput: ''
+    stateForAdvancedSearchInput: '',
+    clickedContact: {}
 }
 
 export default (state = initialState, action) => {
@@ -149,6 +156,11 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 stateForAdvancedSearchInput: action.lettersForAdvancedSearchInput
+            }
+        case CLICKED_CONTACT:
+            return {
+                ...state,
+                clickedContact: action.valueOfTheClickedContact
             }
 
         default:

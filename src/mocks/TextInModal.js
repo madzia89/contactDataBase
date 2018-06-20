@@ -1,35 +1,86 @@
 import React, {Component} from 'react'
+import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
 
 
 class TextInModal extends Component {
-    state = {
-        clickedContact: {}
+    showInput = (indexOfTr) => {
+
+        const newTd = React.createElement('span', {id: indexOfTr + 20},
+            React.createElement('input', null),
+            React.createElement('button', {
+                onClick: () => {
+                    this.hideNewTd(indexOfTr)
+                }
+            }, 'abort'),
+            React.createElement('button', null, 'accept')
+        )
+        ReactDOM.render(newTd, document.getElementById(indexOfTr))
+
     }
 
-    componentWillReceiveProps(nextProps) {
-        this.setState({clickedContact: nextProps.clickedContact})
+    hideNewTd = (aa) => {
+        ReactDOM.unmountComponentAtNode(document.getElementById(aa))
     }
 
     render() {
-        return (
-            <div>
-                {(this.state.clickedContact.name !== undefined) ?
-                    <h2>{this.state.clickedContact.name.first} {this.state.clickedContact.name.last}</h2>
+        if (this.props.clickedContact.name !== undefined) {
+            const firstName = this.props.clickedContact.name.first
+            const lastName = this.props.clickedContact.name.last
+            const locationCity = this.props.clickedContact.location.city
+            const locationStreet = this.props.clickedContact.location.street
+            const locationPostcode = this.props.clickedContact.location.postcode
+            const email = this.props.clickedContact.email
+            const phone = this.props.clickedContact.phone
+            const arrayOfVaraiblesForReactFactory = ['firstName', 'lastName', 'locationCity', 'locationStreet', 'locationPostcode', 'email', 'phone']
+            const arrayForReactFactory = [firstName, lastName, locationCity, locationStreet, locationPostcode, email, phone]
 
-                    :
-                    'loading'
-                }
-            </div>
-        )
+            return (
+                <div>
+                    {(this.props.clickedContact.name !== undefined) ?
+                        <div>
+                            <h2>{firstName} {lastName}</h2>
+
+                            {arrayOfVaraiblesForReactFactory.map((data, i) => {
+                                    return (
+                                        React.createElement('div', {key: i, id: `${data}${i}`},
+                                            React.createElement('span', null, data),
+                                            React.createElement('span', null, arrayForReactFactory[i]),
+                                            React.createElement('span', null, React.createElement('button', {
+                                                onClick: () => {
+                                                    this.showInput(`${i}${data}`)
+                                                },
+                                                type: 'button',
+                                                className: 'buttonForContactEdit',
+                                                alt: 'edit',
+                                                title: 'edit'
+                                            })),
+                                            React.createElement('div', {id: `${i}${data}`})
+                                        )
+                                    )
+                                }
+                            )
+                            }
+
+                        </div>
+                        :
+                        'loading'
+                    }
+                </div>
+            )
+        }
+
+        else {
+            return (
+                'loading'
+            )
+        }
+
     }
 }
 
 const mapStateToProps = state => ({
-    contacts: state.contactsList.contacts,
-    stateForSearchInput: state.contactsList.stateForSearchInput,
-    fullList: state.contactsList.fullList,
-    stateForAdvancedSearchInput: state.contactsList.stateForAdvancedSearchInput,
+    clickedContact: state.contactsList.clickedContact,
 })
 
 const mapDispatchToProps = dispatch => ({})
