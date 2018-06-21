@@ -1,27 +1,40 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
+import {currentContactChangeName} from '../state/singleContactChange'
+import {singleContactConfirmChanges} from '../state/contactsList'
 
 
 class TextInModal extends Component {
+    state = {
+        newValue: ''
+    }
+
     showInput = (indexOfTr) => {
 
         const newTd = React.createElement('span', {id: indexOfTr + `input`},
-            React.createElement('input', null),
+            React.createElement('input', {
+                onChange: (ev) => {
+                    this.setState({newValue: ev.target.value})
+                }
+            }),
             React.createElement('button', {
                 onClick: () => {
                     this.hideNewTd(indexOfTr)
                 }
             }, 'abort'),
-            React.createElement('button', null, 'accept')
+
+            React.createElement('button', {
+                onClick: () => this.props.currentContactChangeName(this.state.newValue)
+            }, 'accept')
         )
         ReactDOM.render(newTd, document.getElementById(indexOfTr))
-
     }
 
-    hideNewTd = (aa) => {
-        ReactDOM.unmountComponentAtNode(document.getElementById(aa))
+    hideNewTd = (idOfTheSpanToUnmount) => {
+        ReactDOM.unmountComponentAtNode(document.getElementById(idOfTheSpanToUnmount))
     }
+
 
     render() {
         if (this.props.clickedContact.name !== undefined) {
@@ -46,22 +59,28 @@ class TextInModal extends Component {
                                         React.createElement('div', {key: i},
                                             React.createElement('span', null, data),
                                             React.createElement('span', null, arrayForReactFactory[i]),
-                                            React.createElement('span', null, React.createElement('button', {
-                                                onClick: () => {
-                                                    this.showInput(`${data}div`)
+                                            React.createElement('span', null,
+                                                React.createElement('button', {
+                                                    onClick: () => {
+                                                        this.showInput(`${data}div`)
 
-                                                },
-                                                type: 'button',
-                                                className: 'buttonForContactEdit',
-                                                alt: 'edit',
-                                                title: 'edit'
-                                            })),
+                                                    },
+                                                    type: 'button',
+                                                    className: 'buttonForContactEdit',
+                                                    alt: 'edit',
+                                                    title: 'edit'
+                                                })),
                                             React.createElement('div', {id: `${data}div`})
                                         )
                                     )
                                 }
                             )
                             }
+                            <button
+                            onClick={() => this.props.singleContactConfirmChanges()}
+                            >
+                                confirm
+                            </button>
 
                         </div>
                         :
@@ -82,9 +101,12 @@ class TextInModal extends Component {
 
 const mapStateToProps = state => ({
     clickedContact: state.contactsList.clickedContact,
+    currentContactData: state.singleContactChange.currentContactData,
 })
 
 const mapDispatchToProps = dispatch => ({
+    currentContactChangeName: (val) => dispatch(currentContactChangeName(val)),
+    singleContactConfirmChanges: () => dispatch(singleContactConfirmChanges())
 })
 
 export default connect(

@@ -6,6 +6,7 @@ const CHANGE_STATE_FOR_INPUT = 'contactsList/STATE_FOR_INPUT'
 const CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT = 'contactsList/CHANGE_STATE_FOR_ADVANCED_SEARCH_INPUT'
 const CLEAR_FORM_FIELDS = 'contactsList/CLEAR_FORM_FIELDS'
 const CLICKED_CONTACT = 'contactsList/CLICKED_CONTACT'
+const SAVE_SINGLE_CONTACT = 'contactsList/SAVE_SINGLE_CONTACT'
 
 export const fetchContacts = (jsonUsers) => ({
     type: FETCH_USERS,
@@ -32,6 +33,10 @@ export const clearFormFields = () => ({type: CLEAR_FORM_FIELDS})
 export const clickedContact = (valueOfTheClickedContact) => ({
     type: CLICKED_CONTACT,
     valueOfTheClickedContact
+})
+export const saveSingleContact = (valueOfTheChangedContact) => ({
+    type: SAVE_SINGLE_CONTACT,
+    valueOfTheChangedContact
 })
 
 export const initUsers = () => (dispatch, getState) => {
@@ -78,6 +83,11 @@ export const sortContacts = () => (dispatch, getState) => {
     } else return
 }
 
+export const singleContactConfirmChanges = () => (dispatch, getState) => {
+    const stateFromSingleContactChange = getState().singleContactChange.currentContactData
+    dispatch(saveSingleContact(stateFromSingleContactChange))
+}
+
 const initialState = {
     fullList: {},
     contacts: {},
@@ -90,7 +100,12 @@ export default (state = initialState, action) => {
     switch (action.type) {
         case FETCH_USERS:
             const users = action.jsonUsers
-            const myContacts = users.results
+            const myContacts = users.results.map((user, i) => {
+                return {
+                    ...user,
+                    userKey: user.userKey = i
+                }
+            })
             return {
                 ...state,
                 contacts: myContacts,
@@ -161,6 +176,17 @@ export default (state = initialState, action) => {
             return {
                 ...state,
                 clickedContact: action.valueOfTheClickedContact
+            }
+        case SAVE_SINGLE_CONTACT:
+            const fullListArray = state.fullList
+            const changedContact = action.valueOfTheChangedContact
+            const findTheObjectToChange = fullListArray.findIndex(contact => contact.userKey === changedContact.userKey)
+            fullListArray[findTheObjectToChange] = changedContact
+            console.log(fullListArray)
+            return {
+                ...state,
+                fullList: fullListArray,
+                contacts: fullListArray
             }
 
         default:

@@ -36,6 +36,7 @@ class ContactComponent extends Component {
     }
 
     render() {
+        const theaders = ['pic', 'first name', 'last name', 'email', 'city', 'more']
 
         const myContacts = this.props.contacts.filter(name => {
             return (
@@ -76,9 +77,7 @@ class ContactComponent extends Component {
                                 this.props.clickedContact(contact)
                                 this.openModal()
                                 this.props.getCurrentContactValue()
-
-                            }
-                            }
+                            }}
                         >
                             clickForMore
                         </button>}
@@ -155,12 +154,9 @@ class ContactComponent extends Component {
                         <table>
                             <thead>
                             <tr>
-                                <th>pic</th>
-                                <th>first name</th>
-                                <th>last name</th>
-                                <th>email</th>
-                                <th>city</th>
-                                <th>more</th>
+                                {theaders.map((header, i) => {
+                                    return <th key={`${header}${i}`}>{header}</th>
+                                })}
                             </tr>
                             </thead>
                             <tbody>
