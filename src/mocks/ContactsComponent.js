@@ -18,9 +18,7 @@ class ContactComponent extends Component {
     }
 
     handleClick(event) {
-        this.setState({
-            currentPage: Number(event.target.id)
-        })
+        this.setState({currentPage: Number(event.target.id)})
     }
 
     sortContacts = () => {
@@ -54,7 +52,6 @@ class ContactComponent extends Component {
             this.setState({contacts: afterSecondFilter})
         )
     }
-
 
     render() {
         const theaders = ['pic', 'first name', 'last name', 'email', 'city', 'more']
@@ -139,28 +136,30 @@ class ContactComponent extends Component {
                             </select>
                             <input
                                 type={'text'}
+                                value={this.state.basicSearchInput}
                                 onChange={(event) => {
                                     this.setState({basicSearchInput: event.target.value},
                                         () => this.basicFilter())
                                 }}
                             >
                             </input>
-                            <button
-                                type="button"
-                                onClick={() => {
-                                    this.props.clearFormFields()
-                                }}
-                            >
-                                CLEAR
-                            </button>
                             <input
                                 id={'advancedSearchListInput'}
                                 className={'thisInputIsInvisible'}
+                                value={this.state.stateForAdvancedSearchInput}
                                 onChange={(event) => {
                                     this.setState({stateForAdvancedSearchInput: event.target.value})
                                 }}
                             >
                             </input>
+                            <button
+                                type="button"
+                                onClick={() => {
+                                    this.setState({basicSearchInput: '', stateForAdvancedSearchInput: ''})
+                                }}
+                            >
+                                CLEAR
+                            </button>
                         </Row>
                         <table>
                             <thead>
@@ -192,7 +191,6 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    // clearFormFields: (val) => dispatch(clearFormFields(val)),
     passClickedContact: (val) => dispatch(passClickedContact(val)),
     getCurrentContactValue: () => dispatch(getCurrentContactValue())
 })

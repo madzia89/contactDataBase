@@ -55,6 +55,7 @@ export default (state = initialState, action) => {
                 clickedContact: action.valueOfTheClickedContact
             }
 
+
         case SAVE_SINGLE_CONTACT:
             const fullListArray = state.fullList
             const changedContact = action.valueOfTheChangedContact

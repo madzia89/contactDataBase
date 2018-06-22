@@ -3,6 +3,7 @@ import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
 import {currentContactChangeName} from '../state/singleContactChange'
 import {singleContactConfirmChanges} from '../state/contactsList'
+import {clickOnSpanClose} from './utils'
 
 
 class TextInModal extends Component {
@@ -25,7 +26,10 @@ class TextInModal extends Component {
             }, 'abort'),
 
             React.createElement('button', {
-                onClick: () => this.props.currentContactChangeName(this.state.newValue)
+                onClick: () => {
+                    this.props.currentContactChangeName(this.state.newValue)
+                    this.hideNewTd(indexOfTr)
+                }
             }, 'accept')
         )
         ReactDOM.render(newTd, document.getElementById(indexOfTr))
@@ -77,7 +81,11 @@ class TextInModal extends Component {
                             )
                             }
                             <button
-                            onClick={() => this.props.singleContactConfirmChanges()}
+                            onClick={() => {
+                                this.props.singleContactConfirmChanges()
+                                clickOnSpanClose()
+
+                            }}
                             >
                                 confirm
                             </button>
@@ -106,7 +114,7 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     currentContactChangeName: (val) => dispatch(currentContactChangeName(val)),
-    singleContactConfirmChanges: () => dispatch(singleContactConfirmChanges())
+    singleContactConfirmChanges: () => dispatch(singleContactConfirmChanges()),
 })
 
 export default connect(
