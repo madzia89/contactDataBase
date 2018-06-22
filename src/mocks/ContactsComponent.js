@@ -1,22 +1,20 @@
 import React, {Component} from 'react'
-import {firstLetterToUpperCase} from "./utils"
+import {filteredList, firstLetterToUpperCase, openModal, selectCategory, secondFilter} from "./utils"
+import _ from 'lodash'
 import {Grid, Row} from 'react-flexbox-grid'
-import {
-    selectCategory,
-    sortContacts,
-    changeStateForInput,
-    clearFormFields,
-    changeStateForAdvancedInput,
-    clickedContact,
-} from "../state/contactsList"
+import {passClickedContact} from "../state/contactsList"
 import {connect} from "react-redux"
-import TextInModal from "./TextInModal"
-import {getCurrentContactValue} from "../state/singleContactChange";
+import {ModalForSingleContact} from './ModalForSingleContact'
+import {getCurrentContactValue} from "../state/singleContactChange"
 
 class ContactComponent extends Component {
     state = {
         currentPage: 1,
         contactsPerPage: 10,
+        stateForAdvancedSearchInput: '',
+        fullListClone: this.props.fullList,
+        contacts: this.props.fullList,
+        basicSearchInput: ''
     }
 
     handleClick(event) {
@@ -25,32 +23,48 @@ class ContactComponent extends Component {
         })
     }
 
-    openModal = () => {
-        const modal = document.getElementById('myModal')
-        modal.style.display = "block"
+    sortContacts = () => {
+        let currentState = this.state.contacts
+        const pickedValueFromCategorySelect = document.getElementById('selectWithCategories').value
+        const pickedValueFromSecondSelect = document.getElementById('secondSelect').value
+        if (pickedValueFromSecondSelect === '1') {
+            let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['asc', 'desc'])
+            return this.setState({contacts: toBeNewState})
+        } else if (pickedValueFromSecondSelect === '2') {
+            let toBeNewState = _.orderBy(currentState, [`${pickedValueFromCategorySelect}`], ['desc', 'asc'])
+            return this.setState({contacts: toBeNewState})
+        }
     }
 
-    clickOnSpanClose = () => {
-        const modal = document.getElementById('myModal')
-        modal.style.display = "none";
+    basicFilter = () => {
+        const actualContacts = this.state.fullListClone
+        const basicSearchInput = this.state.basicSearchInput
+        const selectWithCategories = document.getElementById('selectWithCategories').value
+        const advancedSearchInput = document.getElementById('advancedSearchListInput')
+
+        if (basicSearchInput === '') {
+            advancedSearchInput.className = 'thisInputIsInvisible'
+        }
+        else {
+            advancedSearchInput.className = 'thisInputIsVisible'
+        }
+        const afterSecondFilter = filteredList(actualContacts, selectWithCategories, basicSearchInput)
+
+        return (
+            this.setState({contacts: afterSecondFilter})
+        )
     }
+
 
     render() {
         const theaders = ['pic', 'first name', 'last name', 'email', 'city', 'more']
 
-        const myContacts = this.props.contacts.filter(name => {
-            return (
-                name.name.first.includes(this.props.stateForAdvancedSearchInput) ||
-                name.name.last.includes(this.props.stateForAdvancedSearchInput) ||
-                name.location.city.includes(this.props.stateForAdvancedSearchInput) ||
-                name.email.includes(this.props.stateForAdvancedSearchInput) || !name
-            )
-        })
+        const myContacts = secondFilter(this.state.contacts, this.state.stateForAdvancedSearchInput)
+
         const {currentPage, contactsPerPage} = this.state
         const indexOfLastContact = currentPage * contactsPerPage
         const indexOfFirstContact = indexOfLastContact - contactsPerPage
         const currentContacts = myContacts.slice(indexOfFirstContact, indexOfLastContact)
-
 
         const renderContacts = currentContacts.map((contact, index) => {
             return (
@@ -74,8 +88,8 @@ class ContactComponent extends Component {
                         {<button
                             id={'myBtn'}
                             onClick={() => {
-                                this.props.clickedContact(contact)
-                                this.openModal()
+                                this.props.passClickedContact(contact)
+                                openModal()
                                 this.props.getCurrentContactValue()
                             }}
                         >
@@ -89,7 +103,6 @@ class ContactComponent extends Component {
         for (let i = 1; i <= Math.ceil(myContacts.length / contactsPerPage); i++) {
             pageNumbers.push(i)
         }
-
         const renderPageNumbers = pageNumbers.map(number => {
             return (
                 <li
@@ -113,7 +126,7 @@ class ContactComponent extends Component {
                             <select
                                 id={'selectWithCategories'}
                                 onChange={() => {
-                                    this.props.selectCategory()
+                                    selectCategory()
                                 }}>
                                 <option value="empty"></option>
                                 <option value="name.first">name</option>
@@ -122,13 +135,13 @@ class ContactComponent extends Component {
                             </select>
 
                             <select id={'secondSelect'}
-                                    onChange={this.props.sortContacts}>
+                                    onChange={this.sortContacts}>
                             </select>
                             <input
                                 type={'text'}
-                                value={this.props.stateForSearchInput}
                                 onChange={(event) => {
-                                    this.props.changeStateForInput(event.target.value)
+                                    this.setState({basicSearchInput: event.target.value},
+                                        () => this.basicFilter())
                                 }}
                             >
                             </input>
@@ -143,10 +156,8 @@ class ContactComponent extends Component {
                             <input
                                 id={'advancedSearchListInput'}
                                 className={'thisInputIsInvisible'}
-                                type={'text'}
-                                value={this.props.stateForAdvancedSearchInput}
                                 onChange={(event) => {
-                                    this.props.changeStateForAdvancedInput(event.target.value)
+                                    this.setState({stateForAdvancedSearchInput: event.target.value})
                                 }}
                             >
                             </input>
@@ -170,47 +181,19 @@ class ContactComponent extends Component {
                 <ul id="page-numbers">
                     {renderPageNumbers}
                 </ul>
-
-                <div
-                    id="myModal"
-                    className="modal"
-                    onClick={(event) => {
-                        const modal = document.getElementById('myModal')
-                        if (event.target === modal) {
-                            modal.style.display = "none";
-                        }
-                    }
-                    }
-                >
-                    <div className="modal-content">
-                        <span className="close"
-                              onClick={() => {
-                                  this.clickOnSpanClose()
-                              }}>&times;</span>
-                        <TextInModal
-                            clickedContact={this.state.clickedContact}
-                        />
-                    </div>
-                </div>
+                <ModalForSingleContact/>
             </div>
-        );
+        )
     }
 }
 
 const mapStateToProps = state => ({
-    contacts: state.contactsList.contacts,
-    stateForSearchInput: state.contactsList.stateForSearchInput,
     fullList: state.contactsList.fullList,
-    stateForAdvancedSearchInput: state.contactsList.stateForAdvancedSearchInput,
 })
 
 const mapDispatchToProps = dispatch => ({
-    selectCategory: () => dispatch(selectCategory()),
-    sortContacts: () => dispatch(sortContacts()),
-    changeStateForInput: (val) => dispatch(changeStateForInput(val)),
-    clearFormFields: (val) => dispatch(clearFormFields(val)),
-    changeStateForAdvancedInput: (val) => dispatch(changeStateForAdvancedInput(val)),
-    clickedContact: (val) => dispatch(clickedContact(val)),
+    // clearFormFields: (val) => dispatch(clearFormFields(val)),
+    passClickedContact: (val) => dispatch(passClickedContact(val)),
     getCurrentContactValue: () => dispatch(getCurrentContactValue())
 })
 
