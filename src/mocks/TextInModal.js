@@ -1,8 +1,8 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
-import {currentContactChangeName} from '../state/singleContactChange'
-import {singleContactConfirmChanges} from '../state/contactsList'
+// import {currentContactChangeName} from '../state/singleContactChange'
+import {currentContactChangeName, saveSingleContact} from '../state/contactsList'
 import {clickOnSpanClose} from './utils'
 
 
@@ -82,7 +82,7 @@ class TextInModal extends Component {
                             }
                             <button
                             onClick={() => {
-                                this.props.singleContactConfirmChanges()
+                                this.props.saveSingleContact()
                                 clickOnSpanClose()
 
                             }}
@@ -109,12 +109,11 @@ class TextInModal extends Component {
 
 const mapStateToProps = state => ({
     clickedContact: state.contactsList.clickedContact,
-    currentContactData: state.singleContactChange.currentContactData,
 })
 
 const mapDispatchToProps = dispatch => ({
     currentContactChangeName: (val) => dispatch(currentContactChangeName(val)),
-    singleContactConfirmChanges: () => dispatch(singleContactConfirmChanges()),
+    saveSingleContact: () => dispatch(saveSingleContact()),
 })
 
 export default connect(

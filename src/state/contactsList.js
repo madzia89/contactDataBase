@@ -1,6 +1,8 @@
 const FETCH_USERS = 'contactsList/FETCH_USERS'
 const PASS_CLICKED_CONTACT = 'contactsList/PASS_CLICKED_CONTACT'
 const SAVE_SINGLE_CONTACT = 'contactsList/SAVE_SINGLE_CONTACT'
+const CURRENT_CONTACT_CHANGE_NAME = 'contactsList/CURRENT_CONTACT_CHANGE_NAME'
+
 
 export const fetchContacts = (jsonUsers) => ({
     type: FETCH_USERS,
@@ -17,21 +19,23 @@ export const saveSingleContact = (valueOfTheChangedContact) => ({
 })
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=100")
+    fetch("https://randomuser.me/api/?results=10")
         .then(res => res.json())
         .then(jsonUsers => {
             dispatch(fetchContacts(jsonUsers))
         })
 }
 
-export const singleContactConfirmChanges = () => (dispatch, getState) => {
-    const stateFromSingleContactChange = getState().singleContactChange.currentContactData
-    dispatch(saveSingleContact(stateFromSingleContactChange))
-}
+export const currentContactChangeName = (newFirstNameValue) => ({
+    type: CURRENT_CONTACT_CHANGE_NAME,
+    newFirstNameValue
+})
 
 const initialState = {
     fullList: {},
-    clickedContact: {}
+    clickedContact: {},
+    currentContactData: {},
+
 }
 
 export default (state = initialState, action) => {
@@ -56,14 +60,29 @@ export default (state = initialState, action) => {
             }
 
 
-        case SAVE_SINGLE_CONTACT:
-            const fullListArray = state.fullList
-            const changedContact = action.valueOfTheChangedContact
-            const findTheObjectToChange = fullListArray.findIndex(contact => contact.userKey === changedContact.userKey)
-            fullListArray[findTheObjectToChange] = changedContact
+        case CURRENT_CONTACT_CHANGE_NAME:
+            const newName = state.clickedContact
+            const changed = action.newFirstNameValue
+            const newNameChanged = {
+                ...newName,
+                name: {...newName.name, first: changed}
+            }
             return {
                 ...state,
-                fullList: fullListArray,
+                currentContactData: newNameChanged,
+            }
+
+
+        case SAVE_SINGLE_CONTACT:
+            const fullListArray = state.fullList
+            const changedContact = state.currentContactData
+            const findTheObjectToChange = fullListArray.findIndex(contact => contact.userKey === changedContact.userKey)
+            return {
+                ...state,
+                fullList:
+                [fullListArray, fullListArray[findTheObjectToChange] = changedContact],
+                currentContactData: {},
+                clickedContact: {}
             }
 
         default:

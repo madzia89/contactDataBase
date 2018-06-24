@@ -5,7 +5,6 @@ import {Grid, Row} from 'react-flexbox-grid'
 import {passClickedContact} from "../state/contactsList"
 import {connect} from "react-redux"
 import {ModalForSingleContact} from './ModalForSingleContact'
-import {getCurrentContactValue} from "../state/singleContactChange"
 
 class ContactComponent extends Component {
     state = {
@@ -87,7 +86,6 @@ class ContactComponent extends Component {
                             onClick={() => {
                                 this.props.passClickedContact(contact)
                                 openModal()
-                                this.props.getCurrentContactValue()
                             }}
                         >
                             clickForMore
@@ -192,7 +190,6 @@ const mapStateToProps = state => ({
 
 const mapDispatchToProps = dispatch => ({
     passClickedContact: (val) => dispatch(passClickedContact(val)),
-    getCurrentContactValue: () => dispatch(getCurrentContactValue())
 })
 
 export default connect(
