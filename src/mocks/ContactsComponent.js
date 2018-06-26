@@ -11,9 +11,14 @@ class ContactComponent extends Component {
         currentPage: 1,
         contactsPerPage: 10,
         stateForAdvancedSearchInput: '',
-        fullListClone: this.props.fullList,
         contacts: this.props.fullList,
         basicSearchInput: ''
+    }
+
+    componentWillReceiveProps(props) {
+        if (props.fullList !== this.state.contacts) {
+            this.setState({contacts: props.fullList}, () => this.basicFilter())
+        }
     }
 
     handleClick(event) {
@@ -34,7 +39,7 @@ class ContactComponent extends Component {
     }
 
     basicFilter = () => {
-        const actualContacts = this.state.fullListClone
+        const actualContacts = this.props.fullList
         const basicSearchInput = this.state.basicSearchInput
         const selectWithCategories = document.getElementById('selectWithCategories').value
         const advancedSearchInput = document.getElementById('advancedSearchListInput')

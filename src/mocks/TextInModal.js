@@ -1,7 +1,6 @@
 import React, {Component} from 'react'
 import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
-// import {currentContactChangeName} from '../state/singleContactChange'
 import {currentContactChangeName, saveSingleContact} from '../state/contactsList'
 import {clickOnSpanClose} from './utils'
 

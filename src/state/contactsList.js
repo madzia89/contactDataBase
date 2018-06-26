@@ -13,9 +13,8 @@ export const passClickedContact = (valueOfTheClickedContact) => ({
     type: PASS_CLICKED_CONTACT,
     valueOfTheClickedContact
 })
-export const saveSingleContact = (valueOfTheChangedContact) => ({
-    type: SAVE_SINGLE_CONTACT,
-    valueOfTheChangedContact
+export const saveSingleContact = () => ({
+    type: SAVE_SINGLE_CONTACT
 })
 
 export const initUsers = () => (dispatch, getState) => {
@@ -74,13 +73,19 @@ export default (state = initialState, action) => {
 
 
         case SAVE_SINGLE_CONTACT:
-            const fullListArray = state.fullList
+            let fullListArray = state.fullList
             const changedContact = state.currentContactData
-            const findTheObjectToChange = fullListArray.findIndex(contact => contact.userKey === changedContact.userKey)
             return {
                 ...state,
-                fullList:
-                [fullListArray, fullListArray[findTheObjectToChange] = changedContact],
+                fullList: [...fullListArray.map((user, i) => {
+                    if (user.userKey === changedContact.userKey) {
+                        return (
+                           changedContact
+                    )
+                    } else if(user.userKey !== changedContact.userKey){
+                        return user
+                    }
+                })],
                 currentContactData: {},
                 clickedContact: {}
             }
