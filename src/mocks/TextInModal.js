@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux"
 import {currentContactChange} from '../state/contactsList'
-import {clickOnSpanClose} from './utils'
+import {clickOnSpanClose, firstLetterToUpperCase} from './utils'
 
 
 class TextInModal extends Component {
@@ -16,10 +16,10 @@ class TextInModal extends Component {
     }
 
     componentWillReceiveProps(props) {
-        this.tadam(props.clickedContact)
+        this.setStateForComponentsState(props.clickedContact)
     }
 
-    tadam = (props) => {
+    setStateForComponentsState = (props) => {
         if (props.name.first !== this.state.newFirstNameValue) {
             this.setState({newFirstNameValue: props.name.first})
         }
@@ -39,96 +39,106 @@ class TextInModal extends Component {
             this.setState({newPhoneValue: props.phone})
         }
     }
+
     render() {
         if (this.props.clickedContact.name !== undefined) {
             return (
                 <div>
                     {(this.props.clickedContact.name !== undefined) ?
-                        <div>
-                            <h2>{this.state.newFirstNameValue} {this.state.newLastNameValue}</h2>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                        <div className={'textInModal__content'}>
+                            <h2 className={'textInModal__header'}>{this.state.newFirstNameValue} {this.state.newLastNameValue}</h2>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     name
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
-                                        value={this.state.newFirstNameValue}
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
+                                        value={firstLetterToUpperCase(this.state.newFirstNameValue)}
                                         onChange={(ev) => this.setState({newFirstNameValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     lastName
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
-                                        value={this.state.newLastNameValue}
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
+                                        value={firstLetterToUpperCase(this.state.newLastNameValue)}
                                         onChange={(ev) => this.setState({newLastNameValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     city
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
-                                        value={this.state.newCityValue}
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
+                                        value={firstLetterToUpperCase(this.state.newCityValue)}
                                         onChange={(ev) => this.setState({newCityValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     street
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={this.state.newStreetValue}
                                         onChange={(ev) => this.setState({newStreetValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     email
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={this.state.newEmailValue}
                                         onChange={(ev) => this.setState({newEmailValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <div>
-                                <div style={{display: 'inline-block'}}>
+                            <div className={'textInModal__divForTitleAndInput'}>
+                                <div className={'textInModal__divForTitleAndInput_InputTitle'}>
                                     phone
                                 </div>
-                                <div style={{display: 'inline-block'}}>
+                                <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
+                                        className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={this.state.newPhoneValue}
                                         onChange={(ev) => this.setState({newPhoneValue: ev.target.value})}>
                                     </input>
                                 </div>
                             </div>
-                            <button
-                                onClick={() => {
-                                    this.tadam(this.props.clickedContact)
-                                    clickOnSpanClose()
-                                }}
-                            >
-                                abort
-                            </button>
-                            <button
-                                onClick={() => {
-                                    this.props.currentContactChange(this.state)
-                                    clickOnSpanClose()
-                                }}
-                            >
-                                confirm
-                            </button>
-
+                            <div className={'textInModal__divForButtons'}>
+                                <button
+                                    className={'textInModal__btn'}
+                                    onClick={() => {
+                                        this.setStateForComponentsState(this.props.clickedContact)
+                                        clickOnSpanClose()
+                                    }}
+                                >
+                                    abort
+                                </button>
+                                <button
+                                    className={'textInModal__btn'}
+                                    onClick={() => {
+                                        this.props.currentContactChange(this.state)
+                                        clickOnSpanClose()
+                                    }}
+                                >
+                                    confirm
+                                </button>
+                            </div>
                         </div>
                         :
                         'loading'

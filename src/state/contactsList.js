@@ -18,7 +18,7 @@ export const saveSingleContact = (data) => ({
 })
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=10")
+    fetch("https://randomuser.me/api/?results=50")
         .then(res => res.json())
         .then(jsonUsers => {
             dispatch(fetchContacts(jsonUsers))
@@ -95,6 +95,7 @@ const initialState = {
 
 export default (state = initialState, action) => {
     switch (action.type) {
+
         case FETCH_USERS:
             const users = action.jsonUsers
             const myContacts = users.results.map((user, i) => {
@@ -113,8 +114,8 @@ export default (state = initialState, action) => {
                 ...state,
                 clickedContact: action.valueOfTheClickedContact
             }
-        case
-        SAVE_SINGLE_CONTACT:
+
+        case SAVE_SINGLE_CONTACT:
             let fullListArray = state.fullList
             const changedContact = action.data
             return {

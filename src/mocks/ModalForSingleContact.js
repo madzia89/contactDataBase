@@ -17,7 +17,7 @@ export const ModalForSingleContact = () => {
         }}
     >
         <div className="modal-content">
-                        <span className="close"
+                        <span className="modal_close"
                               onClick={() => {
                                   clickOnSpanClose()
                               }}>&times;</span>

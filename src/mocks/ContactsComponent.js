@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {filteredList, firstLetterToUpperCase, openModal, selectCategory, secondFilter} from "./utils"
+import {filteredList, firstLetterToUpperCase, openModal, selectCategory, secondFilter, checkLiNumber} from "./utils"
 import _ from 'lodash'
 import {Grid, Row} from 'react-flexbox-grid'
 import {passClickedContact} from "../state/contactsList"
@@ -45,10 +45,9 @@ class ContactComponent extends Component {
         const advancedSearchInput = document.getElementById('advancedSearchListInput')
 
         if (basicSearchInput === '') {
-            advancedSearchInput.className = 'thisInputIsInvisible'
-        }
-        else {
-            advancedSearchInput.className = 'thisInputIsVisible'
+            advancedSearchInput.className = 'contactComponent__advancedSortInputInvisible'
+        } else {
+            advancedSearchInput.className = 'contactComponent__advancedSortInputVisible'
         }
         const afterSecondFilter = filteredList(actualContacts, selectWithCategories, basicSearchInput)
 
@@ -67,23 +66,23 @@ class ContactComponent extends Component {
 
         const renderContacts = currentContacts.map((contact, index) => {
             return (
-                <tr key={contact.phone + contact.id.value}>
-                    <td>
+                <tr key={contact.phone + contact.id.value} className={'contactsComponent__tableRows'}>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {<img src={contact.picture.thumbnail} alt={`${contact.name.first}`}/>}
                     </td>
-                    <td>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {firstLetterToUpperCase(contact.name.first)}
                     </td>
-                    <td>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {firstLetterToUpperCase(contact.name.last)}
                     </td>
-                    <td>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {contact.email}
                     </td>
-                    <td>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {firstLetterToUpperCase(contact.location.city)}
                     </td>
-                    <td>
+                    <td className={'contactComponent__table__tableRow_td'}>
                         {<button
                             id={'myBtn'}
                             onClick={() => {
@@ -104,6 +103,7 @@ class ContactComponent extends Component {
         const renderPageNumbers = pageNumbers.map(number => {
             return (
                 <li
+                    className={checkLiNumber(number, this.state.currentPage, myContacts.length)}
                     key={number}
                     id={number}
                     onClick={(ev) => this.handleClick(ev)}
@@ -126,7 +126,7 @@ class ContactComponent extends Component {
                                 onChange={() => {
                                     selectCategory()
                                 }}>
-                                <option value="empty"></option>
+                                <option value="empty"> </option>
                                 <option value="name.first">name</option>
                                 <option value="name.last">last name</option>
                                 <option value="location.city">city</option>
@@ -146,7 +146,7 @@ class ContactComponent extends Component {
                             </input>
                             <input
                                 id={'advancedSearchListInput'}
-                                className={'thisInputIsInvisible'}
+                                className={'contactComponent__advancedSortInputInvisible'}
                                 value={this.state.stateForAdvancedSearchInput}
                                 onChange={(event) => {
                                     this.setState({stateForAdvancedSearchInput: event.target.value})
@@ -162,11 +162,11 @@ class ContactComponent extends Component {
                                 CLEAR
                             </button>
                         </Row>
-                        <table>
+                        <table className={'contactsComponent__table'}>
                             <thead>
                             <tr>
                                 {theaders.map((header, i) => {
-                                    return <th key={`${header}${i}`}>{header}</th>
+                                    return <th key={`${header}${i}`} className={`contactsComponent__table_th${i}`}>{header}</th>
                                 })}
                             </tr>
                             </thead>

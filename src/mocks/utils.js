@@ -3,6 +3,24 @@ export const firstLetterToUpperCase = (word) => {
 }
 
 
+export const checkLiNumber = (number, currentPage, contactsLength) => {
+    if (number === currentPage) {
+        return 'pageNumberIsCurrent'
+    }
+    if (((number > (currentPage - 5)) && (number < currentPage + 5)) ||
+        ((number === (currentPage - 20)) || (number === currentPage + 20)) ||
+        ((number === (currentPage - 50)) || (number === currentPage + 50)) ||
+        ((number === (currentPage - 100)) || (number === currentPage + 100)) ||
+        ((number === 1) || (number === (contactsLength / 10)))
+    ) {
+        return 'pageNumberIsVisible'
+    } else {
+        return 'pageNumberIsInvisible'
+    }
+
+}
+
+
 export const openModal = () => {
     const modal = document.getElementById('myModal')
     modal.style.display = "block"
