@@ -59,9 +59,7 @@ class ContactComponent extends Component {
 
     render() {
         const theaders = ['pic', 'first name', 'last name', 'email', 'city', 'more']
-
         const myContacts = secondFilter(this.state.contacts, this.state.stateForAdvancedSearchInput)
-
         const {currentPage, contactsPerPage} = this.state
         const indexOfLastContact = currentPage * contactsPerPage
         const indexOfFirstContact = indexOfLastContact - contactsPerPage

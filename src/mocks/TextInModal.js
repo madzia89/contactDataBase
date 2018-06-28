@@ -1,90 +1,130 @@
 import React, {Component} from 'react'
-import ReactDOM from 'react-dom'
 import {connect} from "react-redux"
-import {currentContactChangeName, saveSingleContact} from '../state/contactsList'
+import {currentContactChange} from '../state/contactsList'
 import {clickOnSpanClose} from './utils'
 
 
 class TextInModal extends Component {
     state = {
-        newValue: ''
+        newFirstNameValue: '',
+        newLastNameValue: '',
+        newCityValue: '',
+        newStreetValue: '',
+        newPostcodeValue: '',
+        newEmailValue: '',
+        newPhoneValue: ''
     }
 
-    showInput = (indexOfTr) => {
-
-        const newTd = React.createElement('span', {id: indexOfTr + `input`},
-            React.createElement('input', {
-                onChange: (ev) => {
-                    this.setState({newValue: ev.target.value})
-                }
-            }),
-            React.createElement('button', {
-                onClick: () => {
-                    this.hideNewTd(indexOfTr)
-                }
-            }, 'abort'),
-
-            React.createElement('button', {
-                onClick: () => {
-                    this.props.currentContactChangeName(this.state.newValue)
-                    this.hideNewTd(indexOfTr)
-                }
-            }, 'accept')
-        )
-        ReactDOM.render(newTd, document.getElementById(indexOfTr))
+    componentWillReceiveProps(props) {
+        this.tadam(props.clickedContact)
     }
 
-    hideNewTd = (idOfTheSpanToUnmount) => {
-        ReactDOM.unmountComponentAtNode(document.getElementById(idOfTheSpanToUnmount))
+    tadam = (props) => {
+        if (props.name.first !== this.state.newFirstNameValue) {
+            this.setState({newFirstNameValue: props.name.first})
+        }
+        if (props.name.last !== this.state.newLastNameValue) {
+            this.setState({newLastNameValue: props.name.last})
+        }
+        if (props.location.city !== this.state.newCityValue) {
+            this.setState({newCityValue: props.location.city})
+        }
+        if (props.location.street !== this.state.newStreetValue) {
+            this.setState({newStreetValue: props.location.street})
+        }
+        if (props.email !== this.state.newEmailValue) {
+            this.setState({newEmailValue: props.email})
+        }
+        if (props.phone !== this.state.newPhoneValue) {
+            this.setState({newPhoneValue: props.phone})
+        }
     }
-
-
     render() {
         if (this.props.clickedContact.name !== undefined) {
-            const firstName = this.props.clickedContact.name.first
-            const lastName = this.props.clickedContact.name.last
-            const locationCity = this.props.clickedContact.location.city
-            const locationStreet = this.props.clickedContact.location.street
-            const locationPostcode = this.props.clickedContact.location.postcode
-            const email = this.props.clickedContact.email
-            const phone = this.props.clickedContact.phone
-            const arrayOfVaraiblesForReactFactory = ['firstName', 'lastName', 'locationCity', 'locationStreet', 'locationPostcode', 'email', 'phone']
-            const arrayForReactFactory = [firstName, lastName, locationCity, locationStreet, locationPostcode, email, phone]
-
             return (
                 <div>
                     {(this.props.clickedContact.name !== undefined) ?
                         <div>
-                            <h2>{firstName} {lastName}</h2>
-
-                            {arrayOfVaraiblesForReactFactory.map((data, i) => {
-                                    return (
-                                        React.createElement('div', {key: i},
-                                            React.createElement('span', null, data),
-                                            React.createElement('span', null, arrayForReactFactory[i]),
-                                            React.createElement('span', null,
-                                                React.createElement('button', {
-                                                    onClick: () => {
-                                                        this.showInput(`${data}div`)
-
-                                                    },
-                                                    type: 'button',
-                                                    className: 'buttonForContactEdit',
-                                                    alt: 'edit',
-                                                    title: 'edit'
-                                                })),
-                                            React.createElement('div', {id: `${data}div`})
-                                        )
-                                    )
-                                }
-                            )
-                            }
+                            <h2>{this.state.newFirstNameValue} {this.state.newLastNameValue}</h2>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    name
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newFirstNameValue}
+                                        onChange={(ev) => this.setState({newFirstNameValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    lastName
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newLastNameValue}
+                                        onChange={(ev) => this.setState({newLastNameValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    city
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newCityValue}
+                                        onChange={(ev) => this.setState({newCityValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    street
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newStreetValue}
+                                        onChange={(ev) => this.setState({newStreetValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    email
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newEmailValue}
+                                        onChange={(ev) => this.setState({newEmailValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
+                            <div>
+                                <div style={{display: 'inline-block'}}>
+                                    phone
+                                </div>
+                                <div style={{display: 'inline-block'}}>
+                                    <input
+                                        value={this.state.newPhoneValue}
+                                        onChange={(ev) => this.setState({newPhoneValue: ev.target.value})}>
+                                    </input>
+                                </div>
+                            </div>
                             <button
-                            onClick={() => {
-                                this.props.saveSingleContact()
-                                clickOnSpanClose()
-
-                            }}
+                                onClick={() => {
+                                    this.tadam(this.props.clickedContact)
+                                    clickOnSpanClose()
+                                }}
+                            >
+                                abort
+                            </button>
+                            <button
+                                onClick={() => {
+                                    this.props.currentContactChange(this.state)
+                                    clickOnSpanClose()
+                                }}
                             >
                                 confirm
                             </button>
@@ -111,8 +151,7 @@ const mapStateToProps = state => ({
 })
 
 const mapDispatchToProps = dispatch => ({
-    currentContactChangeName: (val) => dispatch(currentContactChangeName(val)),
-    saveSingleContact: () => dispatch(saveSingleContact()),
+    currentContactChange: (val) => dispatch(currentContactChange(val)),
 })
 
 export default connect(
