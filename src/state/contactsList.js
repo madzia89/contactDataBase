@@ -18,7 +18,7 @@ export const saveSingleContact = (data) => ({
 })
 
 export const initUsers = () => (dispatch, getState) => {
-    fetch("https://randomuser.me/api/?results=50")
+    fetch("https://randomuser.me/api/?results=5000")
         .then(res => res.json())
         .then(jsonUsers => {
             dispatch(fetchContacts(jsonUsers))

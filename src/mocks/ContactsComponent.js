@@ -40,7 +40,7 @@ class ContactComponent extends Component {
 
     basicFilter = () => {
         const actualContacts = this.props.fullList
-        const basicSearchInput = this.state.basicSearchInput
+        const basicSearchInput = this.state.basicSearchInput.toLowerCase()
         const selectWithCategories = document.getElementById('selectWithCategories').value
         const advancedSearchInput = document.getElementById('advancedSearchListInput')
 

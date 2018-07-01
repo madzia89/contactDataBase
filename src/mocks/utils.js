@@ -35,7 +35,7 @@ export const clickOnSpanClose = () => {
 }
 
 export const secondFilter = (contacts, stateForSearch) => contacts.filter(name => {
-    const stateForAdvancedSearchInput = stateForSearch
+    const stateForAdvancedSearchInput = stateForSearch.toLowerCase()
     return (
         name.name.first.includes(stateForAdvancedSearchInput) ||
         name.name.last.includes(stateForAdvancedSearchInput) ||
