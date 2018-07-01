@@ -2,6 +2,10 @@ export const firstLetterToUpperCase = (word) => {
     return word.charAt(0).toUpperCase() + word.slice(1)
 }
 
+export const allLettersToLowerCase = (word) => {
+    return word.toLowerCase()
+}
+
 
 export const checkLiNumber = (number, currentPage, contactsLength) => {
     if (number === currentPage) {
@@ -17,7 +21,6 @@ export const checkLiNumber = (number, currentPage, contactsLength) => {
     } else {
         return 'pageNumberIsInvisible'
     }
-
 }
 
 
@@ -80,3 +83,8 @@ export const filteredList = (actualContacts, selectWithCategories, basicSearchIn
         name.email.includes(basicSearchInput) || !name
     )
 })
+
+export const clearSelects = () => {
+    document.getElementById('selectWithCategories').value = 'empty'
+    document.getElementById('secondSelect').value = 0
+}

@@ -1,7 +1,7 @@
 import React, {Component} from 'react'
 import {connect} from "react-redux"
 import {currentContactChange} from '../state/contactsList'
-import {clickOnSpanClose, firstLetterToUpperCase} from './utils'
+import {clickOnSpanClose, firstLetterToUpperCase, allLettersToLowerCase} from './utils'
 
 
 class TextInModal extends Component {
@@ -46,70 +46,71 @@ class TextInModal extends Component {
                 <div>
                     {(this.props.clickedContact.name !== undefined) ?
                         <div className={'textInModal__content'}>
-                            <h2 className={'textInModal__header'}>{this.state.newFirstNameValue} {this.state.newLastNameValue}</h2>
+                            <h2 className={'textInModal__header'}>
+                                {firstLetterToUpperCase(this.state.newFirstNameValue)} {firstLetterToUpperCase(this.state.newLastNameValue)}</h2>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    name
+                                    Name:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
                                         className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={firstLetterToUpperCase(this.state.newFirstNameValue)}
-                                        onChange={(ev) => this.setState({newFirstNameValue: ev.target.value})}>
+                                        onChange={(ev) => this.setState({newFirstNameValue: allLettersToLowerCase(ev.target.value)})}>
                                     </input>
                                 </div>
                             </div>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    lastName
+                                    Last name:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
                                         className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={firstLetterToUpperCase(this.state.newLastNameValue)}
-                                        onChange={(ev) => this.setState({newLastNameValue: ev.target.value})}>
+                                        onChange={(ev) => this.setState({newLastNameValue: allLettersToLowerCase(ev.target.value)})}>
                                     </input>
                                 </div>
                             </div>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    city
+                                    City:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
                                         className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={firstLetterToUpperCase(this.state.newCityValue)}
-                                        onChange={(ev) => this.setState({newCityValue: ev.target.value})}>
+                                        onChange={(ev) => this.setState({newCityValue: allLettersToLowerCase(ev.target.value)})}>
                                     </input>
                                 </div>
                             </div>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    street
+                                    Street:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
                                         className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={this.state.newStreetValue}
-                                        onChange={(ev) => this.setState({newStreetValue: ev.target.value})}>
+                                        onChange={(ev) => this.setState({newStreetValue: allLettersToLowerCase(ev.target.value)})}>
                                     </input>
                                 </div>
                             </div>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    email
+                                    Email:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input
                                         className={'textInModal__divForTitleAndInput_InputDiv_Input'}
                                         value={this.state.newEmailValue}
-                                        onChange={(ev) => this.setState({newEmailValue: ev.target.value})}>
+                                        onChange={(ev) => this.setState({newEmailValue: allLettersToLowerCase(ev.target.value)})}>
                                     </input>
                                 </div>
                             </div>
                             <div className={'textInModal__divForTitleAndInput'}>
                                 <div className={'textInModal__divForTitleAndInput_InputTitle'}>
-                                    phone
+                                    Phone:
                                 </div>
                                 <div className={'textInModal__divForTitleAndInput_InputDiv'}>
                                     <input

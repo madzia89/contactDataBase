@@ -1,5 +1,5 @@
 import React, {Component} from 'react'
-import {filteredList, firstLetterToUpperCase, openModal, selectCategory, secondFilter, checkLiNumber} from "./utils"
+import {filteredList, firstLetterToUpperCase, openModal, selectCategory, secondFilter, checkLiNumber, clearSelects} from "./utils"
 import _ from 'lodash'
 import {Grid, Row} from 'react-flexbox-grid'
 import {passClickedContact} from "../state/contactsList"
@@ -57,7 +57,7 @@ class ContactComponent extends Component {
     }
 
     render() {
-        const theaders = ['pic', 'first name', 'last name', 'email', 'city', 'more']
+        const theaders = ['PICTURE', 'NAME', 'LAST NAME', 'EMAIL', 'CITY', 'MORE']
         const myContacts = secondFilter(this.state.contacts, this.state.stateForAdvancedSearchInput)
         const {currentPage, contactsPerPage} = this.state
         const indexOfLastContact = currentPage * contactsPerPage
@@ -66,7 +66,7 @@ class ContactComponent extends Component {
 
         const renderContacts = currentContacts.map((contact, index) => {
             return (
-                <tr key={contact.phone + contact.id.value} className={'contactsComponent__tableRows'}>
+                <tr key={contact.phone + contact.id.value} className={'contactsComponent__tableRows  paperLike'}>
                     <td className={'contactComponent__table__tableRow_td'}>
                         {<img src={contact.picture.thumbnail} alt={`${contact.name.first}`}/>}
                     </td>
@@ -84,13 +84,14 @@ class ContactComponent extends Component {
                     </td>
                     <td className={'contactComponent__table__tableRow_td'}>
                         {<button
+                            className={'contactComponent__table__tableRows_btn'}
                             id={'myBtn'}
                             onClick={() => {
                                 this.props.passClickedContact(contact)
                                 openModal()
                             }}
                         >
-                            clickForMore
+                            more
                         </button>}
                     </td>
                 </tr>)
@@ -117,10 +118,8 @@ class ContactComponent extends Component {
             <div>
                 {(this.props.fullList && this.props.fullList.length) ?
                     <Grid>
-                        <Row center={'xs'}>
-                            <h2 style={{textAlign: 'center'}}>sort by: </h2>
-                        </Row>
-                        <Row center={'xs'}>
+                        <Row center={'xs'} className={'contactsComponent__rowWithSearch'}>
+                            <p style={{textAlign: 'center'}}>sort by: </p>
                             <select
                                 id={'selectWithCategories'}
                                 onChange={() => {
@@ -136,6 +135,7 @@ class ContactComponent extends Component {
                                     onChange={this.sortContacts}>
                             </select>
                             <input
+                                className={'contactComponent__basicSearchInput'}
                                 type={'text'}
                                 value={this.state.basicSearchInput}
                                 onChange={(event) => {
@@ -154,9 +154,13 @@ class ContactComponent extends Component {
                             >
                             </input>
                             <button
+                                className={'contactComponent__search__clearBtn'}
                                 type="button"
                                 onClick={() => {
-                                    this.setState({basicSearchInput: '', stateForAdvancedSearchInput: ''})
+                                    this.setState({basicSearchInput: '', stateForAdvancedSearchInput: ''},
+                                        () => this.basicFilter(),
+                                        clearSelects()
+                                    )
                                 }}
                             >
                                 CLEAR
@@ -166,7 +170,7 @@ class ContactComponent extends Component {
                             <thead>
                             <tr>
                                 {theaders.map((header, i) => {
-                                    return <th key={`${header}${i}`} className={`contactsComponent__table_th${i}`}>{header}</th>
+                                    return <th key={`${header}${i}`} className={`contactsComponent__table_th${i} contactsComponents__table_th`}>{header}</th>
                                 })}
                             </tr>
                             </thead>
